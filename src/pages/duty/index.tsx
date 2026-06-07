@@ -1,26 +1,37 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { View, Text } from '@tarojs/components';
-import Taro from '@tarojs/taro';
-import { getCurrentDuty, mockDutySchedule, mockDutyPersons } from '@/data/duty';
+import Taro, { useDidShow } from '@tarojs/taro';
+import { useDutyStore } from '@/stores/dutyStore';
 import type { DutyPerson, DutySchedule } from '@/types';
 import styles from './index.module.scss';
 
 const DutyPage: React.FC = () => {
-  const currentDuty = getCurrentDuty();
+  const { getCurrentDuty, getWeekSchedule, persons, swapShift } = useDutyStore();
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+  const [, forceUpdate] = useState(0);
 
-  const weekDays = [];
-  const today = new Date();
-  for (let i = 0; i < 7; i++) {
-    const date = new Date(today);
-    date.setDate(date.getDate() + i - 3);
-    weekDays.push({
-      date: date.toISOString().split('T')[0],
-      dayName: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'][date.getDay()],
-      dayNum: date.getDate(),
-      isToday: date.toDateString() === today.toDateString()
-    });
-  }
+  useDidShow(() => {
+    forceUpdate(n => n + 1);
+  });
+
+  const currentDuty = getCurrentDuty();
+  const weekSchedule = getWeekSchedule();
+
+  const weekDays = useMemo(() => {
+    const days = [];
+    const today = new Date();
+    for (let i = 0; i < 7; i++) {
+      const date = new Date(today);
+      date.setDate(date.getDate() + i - 3);
+      days.push({
+        date: date.toISOString().split('T')[0],
+        dayName: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'][date.getDay()],
+        dayNum: date.getDate(),
+        isToday: date.toDateString() === today.toDateString()
+      });
+    }
+    return days;
+  }, []);
 
   const handleCall = (person: DutyPerson) => {
     console.log('[DutyPage] 拨打电话', person.phone);
@@ -32,25 +43,38 @@ const DutyPage: React.FC = () => {
   };
 
   const handleSwitchDuty = () => {
+    const today = new Date().toISOString().split('T')[0];
+
     Taro.showActionSheet({
-      itemList: mockDutyPersons.map(p => `${p.name} - ${p.role}`)
-    }).then(res => {
-      const person = mockDutyPersons[res.tapIndex];
-      Taro.showModal({
-        title: '确认换班',
-        content: `确定要将值班人员更换为 ${person.name} 吗？`,
-        success: (modalRes) => {
-          if (modalRes.confirm) {
-            console.log('[DutyPage] 更换值班人', person.name);
-            Taro.showToast({
-              title: '换班成功',
-              icon: 'success'
-            });
+      itemList: ['换白班', '换夜班']
+    }).then(shiftRes => {
+      const shiftType = shiftRes.tapIndex === 0 ? 'day' : 'night';
+      const shiftLabel = shiftType === 'day' ? '白班' : '夜班';
+
+      Taro.showActionSheet({
+        itemList: persons.map(p => `${p.name} - ${p.role}`)
+      }).then(personRes => {
+        const person = persons[personRes.tapIndex];
+
+        Taro.showModal({
+          title: '确认换班',
+          content: `确定要将今日${shiftLabel}更换为 ${person.name} 吗？`,
+          success: (modalRes) => {
+            if (modalRes.confirm) {
+              console.log('[DutyPage] 更换值班人', shiftType, person.name);
+              swapShift(today, shiftType, person.id);
+              Taro.showToast({
+                title: '换班成功',
+                icon: 'success'
+              });
+            }
           }
-        }
+        });
+      }).catch(err => {
+        console.error('[DutyPage] 选择人员取消', err);
       });
     }).catch(err => {
-      console.error('[DutyPage] 换班操作取消', err);
+      console.error('[DutyPage] 选择班次取消', err);
     });
   };
 
@@ -64,6 +88,12 @@ const DutyPage: React.FC = () => {
     const date = new Date(dateStr);
     return `${date.getMonth() + 1}/${date.getDate()}`;
   };
+
+  const getScheduleForDate = (date: string): DutySchedule | undefined => {
+    return weekSchedule.find(s => s.date === date);
+  };
+
+  const selectedSchedule = getScheduleForDate(selectedDate);
 
   return (
     <View className={styles.page}>
@@ -136,8 +166,12 @@ const DutyPage: React.FC = () => {
         </View>
 
         <View className={styles.dutyScheduleList}>
-          {mockDutySchedule.slice(0, 7).map((schedule: DutySchedule, index) => (
-            <View key={index} className={styles.scheduleItem}>
+          {weekSchedule.map((schedule: DutySchedule, index) => (
+            <View
+              key={schedule.date}
+              className={`${styles.scheduleItem} ${selectedDate === schedule.date ? styles.selected : ''}`}
+              onClick={() => setSelectedDate(schedule.date)}
+            >
               <View className={styles.scheduleDate}>
                 <Text className={styles.scheduleDateText}>{formatDateShort(schedule.date)}</Text>
                 <Text className={styles.scheduleDateWeek}>{formatWeekDay(schedule.date)}</Text>

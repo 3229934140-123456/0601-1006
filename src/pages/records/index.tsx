@@ -1,8 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import { View, Text } from '@tarojs/components';
-import Taro from '@tarojs/taro';
+import Taro, { useDidShow } from '@tarojs/taro';
 import EmptyState from '@/components/EmptyState';
-import { mockRecords, getRecordStats } from '@/data/records';
+import { useRecordStore } from '@/stores/recordStore';
 import { formatTime, formatDuration } from '@/utils/format';
 import type { HandleRecord, HandleStep } from '@/types';
 import styles from './index.module.scss';
@@ -11,7 +11,13 @@ type TabType = 'all' | 'processing' | 'resolved';
 
 const RecordsPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabType>('all');
-  const stats = getRecordStats();
+  const { records, getStats } = useRecordStore();
+  const stats = getStats();
+  const [, forceUpdate] = useState(0);
+
+  useDidShow(() => {
+    forceUpdate(n => n + 1);
+  });
 
   const tabs: { key: TabType; label: string }[] = [
     { key: 'all', label: '全部' },
@@ -20,9 +26,9 @@ const RecordsPage: React.FC = () => {
   ];
 
   const filteredRecords = useMemo(() => {
-    if (activeTab === 'all') return mockRecords;
-    return mockRecords.filter(r => r.status === activeTab);
-  }, [activeTab]);
+    if (activeTab === 'all') return records;
+    return records.filter(r => r.status === activeTab);
+  }, [records, activeTab]);
 
   const getStepTypeText = (type: string) => {
     const map: Record<string, string> = {

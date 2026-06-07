@@ -3,7 +3,7 @@ import { View, Text, ScrollView, Input } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import AlertCard from '@/components/AlertCard';
 import EmptyState from '@/components/EmptyState';
-import { mockAlerts, getAlertStats } from '@/data/alerts';
+import { useAlertStore } from '@/stores/alertStore';
 import type { AlertLevel } from '@/types';
 import styles from './index.module.scss';
 
@@ -12,7 +12,8 @@ type FilterType = 'all' | AlertLevel;
 const AlertsPage: React.FC = () => {
   const [searchText, setSearchText] = useState('');
   const [activeFilter, setActiveFilter] = useState<FilterType>('all');
-  const stats = getAlertStats();
+  const { alerts, getStats, acknowledgeAlert } = useAlertStore();
+  const stats = getStats();
 
   const filters: { key: FilterType; label: string }[] = [
     { key: 'all', label: '全部' },
@@ -23,7 +24,7 @@ const AlertsPage: React.FC = () => {
   ];
 
   const filteredAlerts = useMemo(() => {
-    let result = [...mockAlerts];
+    let result = [...alerts];
 
     if (activeFilter !== 'all') {
       result = result.filter(alert => alert.level === activeFilter);
@@ -45,7 +46,7 @@ const AlertsPage: React.FC = () => {
       if (levelDiff !== 0) return levelDiff;
       return new Date(b.triggerTime).getTime() - new Date(a.triggerTime).getTime();
     });
-  }, [searchText, activeFilter]);
+  }, [alerts, searchText, activeFilter]);
 
   const pendingAlerts = filteredAlerts.filter(a => a.status === 'pending');
   const processingAlerts = filteredAlerts.filter(
@@ -79,6 +80,15 @@ const AlertsPage: React.FC = () => {
     console.log('[AlertsPage] 跳转到告警详情', alertId);
     Taro.navigateTo({
       url: `/pages/alert-detail/index?id=${alertId}`
+    });
+  };
+
+  const handleAcknowledge = (alertId: string) => {
+    console.log('[AlertsPage] 确认告警', alertId);
+    acknowledgeAlert(alertId);
+    Taro.showToast({
+      title: '已确认告警',
+      icon: 'success'
     });
   };
 
@@ -171,7 +181,11 @@ const AlertsPage: React.FC = () => {
                   <Text className={styles.sectionCount}>{pendingAlerts.length} 条</Text>
                 </View>
                 {pendingAlerts.map(alert => (
-                  <AlertCard key={alert.id} alert={alert} />
+                  <AlertCard
+                    key={alert.id}
+                    alert={alert}
+                    onAcknowledge={() => handleAcknowledge(alert.id)}
+                  />
                 ))}
               </>
             )}

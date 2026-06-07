@@ -1,22 +1,38 @@
-import React, { useState, useMemo } from 'react';
-import { View, Text } from '@tarojs/components';
-import Taro, { useRouter } from '@tarojs/taro';
-import { getAlertById } from '@/data/alerts';
-import { mockRecords } from '@/data/records';
+import React, { useState } from 'react';
+import { View, Text, Image } from '@tarojs/components';
+import Taro, { useRouter, useDidShow } from '@tarojs/taro';
+import { useAlertStore } from '@/stores/alertStore';
+import { useRecordStore } from '@/stores/recordStore';
 import { formatDateTime, formatTime } from '@/utils/format';
-import type { Alert, HandleStep } from '@/types';
+import type { HandleStep } from '@/types';
 import styles from './index.module.scss';
 
 const AlertDetailPage: React.FC = () => {
   const router = useRouter();
   const alertId = router.params.id || 'alert-001';
-  const alert = getAlertById(alertId) || getAlertById('alert-001') as Alert;
 
-  const record = useMemo(() => {
-    return mockRecords.find(r => r.alertId === alertId);
-  }, [alertId]);
+  const { getAlertById, acknowledgeAlert, silenceAlert, unsilenceAlert } = useAlertStore();
+  const { getRecordByAlertId, addStep, addScreenshot } = useRecordStore();
 
-  const [isSilenced, setIsSilenced] = useState(alert.isSilenced);
+  const alert = getAlertById(alertId);
+  const record = getRecordByAlertId(alertId);
+  const [, forceUpdate] = useState(0);
+
+  useDidShow(() => {
+    forceUpdate(n => n + 1);
+  });
+
+  if (!alert) {
+    return (
+      <View className={styles.page}>
+        <View style={{ padding: '100rpx', textAlign: 'center' }}>
+          <Text>告警不存在</Text>
+        </View>
+      </View>
+    );
+  }
+
+  const isSilenced = alert.isSilenced;
 
   const handleCall = () => {
     console.log('[AlertDetail] 拨打联系人电话', alert.contact.phone);
@@ -29,6 +45,8 @@ const AlertDetailPage: React.FC = () => {
 
   const handleAcknowledge = () => {
     console.log('[AlertDetail] 确认告警', alert.id);
+    acknowledgeAlert(alert.id);
+    addStep(alert.id, '已确认告警，开始处理', '当前值班人');
     Taro.showToast({
       title: '已确认告警',
       icon: 'success'
@@ -40,19 +58,24 @@ const AlertDetailPage: React.FC = () => {
     Taro.showActionSheet({
       itemList: ['静默 30 分钟', '静默 1 小时', '静默 2 小时', '取消静默']
     }).then(res => {
-      const options = ['静默 30 分钟', '静默 1 小时', '静默 2 小时', '取消静默'];
+      const options = [
+        { label: '静默 30 分钟', minutes: 30 },
+        { label: '静默 1 小时', minutes: 60 },
+        { label: '静默 2 小时', minutes: 120 },
+        { label: '取消静默', minutes: 0 }
+      ];
       const selected = options[res.tapIndex];
 
-      if (selected === '取消静默') {
-        setIsSilenced(false);
+      if (selected.minutes === 0) {
+        unsilenceAlert(alert.id);
         Taro.showToast({
           title: '已取消静默',
           icon: 'success'
         });
       } else {
-        setIsSilenced(true);
+        silenceAlert(alert.id, selected.minutes);
         Taro.showToast({
-          title: `已${selected}`,
+          title: `已${selected.label}`,
           icon: 'success'
         });
       }
@@ -63,9 +86,23 @@ const AlertDetailPage: React.FC = () => {
 
   const handleUploadScreenshot = () => {
     console.log('[AlertDetail] 上传截图');
-    Taro.showToast({
-      title: '上传截图功能',
-      icon: 'none'
+    Taro.chooseImage({
+      count: 9,
+      sizeType: ['compressed'],
+      sourceType: ['album', 'camera'],
+      success: (res) => {
+        console.log('[AlertDetail] 选择图片成功', res.tempFilePaths);
+        res.tempFilePaths.forEach((path: string) => {
+          addScreenshot(alert.id, path);
+        });
+        Taro.showToast({
+          title: `已添加 ${res.tempFilePaths.length} 张截图`,
+          icon: 'success'
+        });
+      },
+      fail: (err) => {
+        console.error('[AlertDetail] 选择图片失败', err);
+      }
     });
   };
 
@@ -78,6 +115,7 @@ const AlertDetailPage: React.FC = () => {
       success: (res) => {
         if (res.confirm && res.content) {
           console.log('[AlertDetail] 添加步骤内容:', res.content);
+          addStep(alert.id, res.content, '当前值班人');
           Taro.showToast({
             title: '已记录',
             icon: 'success'
@@ -103,6 +141,7 @@ const AlertDetailPage: React.FC = () => {
       success: (res) => {
         if (res.confirm) {
           console.log('[AlertDetail] 已推送升级提醒');
+          addStep(alert.id, '已推送升级提醒，等待上级响应', '当前值班人');
           Taro.showToast({
             title: '已推送升级提醒',
             icon: 'success'
@@ -114,13 +153,15 @@ const AlertDetailPage: React.FC = () => {
 
   const steps: HandleStep[] = record?.steps || [
     {
-      id: 'step-1',
+      id: 'step-0',
       time: alert.triggerTime,
       operator: '系统',
       content: '告警触发',
       type: 'acknowledge'
     }
   ];
+
+  const screenshots = record?.screenshots || [];
 
   const getStepTypeText = (type: string) => {
     const map: Record<string, string> = {
@@ -234,8 +275,33 @@ const AlertDetailPage: React.FC = () => {
           <View className={styles.sectionTitle}>
             <View className={styles.titleBar} />
             <Text>相关截图</Text>
+            <Text
+              style={{
+                marginLeft: 'auto',
+                fontSize: '24rpx',
+                color: '#165DFF',
+                fontWeight: 'normal'
+              }}
+              onClick={handleUploadScreenshot}
+            >
+              上传
+            </Text>
           </View>
           <View className={styles.screenshotList}>
+            {screenshots.map((src, index) => (
+              <Image
+                key={index}
+                className={styles.screenshotItem}
+                src={src}
+                mode="aspectFill"
+                onClick={() => {
+                  Taro.previewImage({
+                    urls: screenshots,
+                    current: src
+                  });
+                }}
+              />
+            ))}
             <View className={`${styles.screenshotItem} ${styles.addBtn}`} onClick={handleUploadScreenshot}>
               <Text className={styles.plusIcon}>+</Text>
             </View>

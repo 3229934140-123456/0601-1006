@@ -1,73 +1,63 @@
 import React, { useState } from 'react';
-import { View, Text } from '@tarojs/components';
+import { View, Text, Picker } from '@tarojs/components';
 import Taro from '@tarojs/taro';
-import { mockNotificationRules } from '@/data/review';
-import type { NotificationRule, AlertLevel } from '@/types';
+import { useNotificationStore } from '@/stores/notificationStore';
+import type { AlertLevel } from '@/types';
 import styles from './index.module.scss';
 
 const NotificationPage: React.FC = () => {
-  const [rules, setRules] = useState<NotificationRule[]>(mockNotificationRules);
-  const [dndEnabled, setDndEnabled] = useState(false);
-  const [channels, setChannels] = useState({
-    push: true,
-    sms: false,
-    phone: false,
-    email: true
-  });
+  const {
+    rules,
+    dndEnabled,
+    dndStartTime,
+    dndEndTime,
+    dndDays,
+    channels,
+    toggleRule,
+    toggleDnd,
+    setDndTime,
+    toggleDndDay,
+    toggleChannel
+  } = useNotificationStore();
 
-  const toggleRule = (id: string) => {
-    console.log('[Notification] 切换规则状态', id);
-    setRules(prev => prev.map(rule =>
-      rule.id === id ? { ...rule, enabled: !rule.enabled } : rule
-    ));
+  const dayLabels = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
+
+  const getRuleLevelText = (levels: AlertLevel[]) => {
+    return levels.join(' / ');
   };
 
-  const toggleDnd = () => {
-    console.log('[Notification] 切换免打扰模式');
-    setDndEnabled(prev => !prev);
-    Taro.showToast({
-      title: dndEnabled ? '已关闭免打扰' : '已开启免打扰',
-      icon: 'none'
-    });
-  };
-
-  const toggleChannel = (channel: keyof typeof channels) => {
-    console.log('[Notification] 切换通知渠道', channel);
-    setChannels(prev => ({
-      ...prev,
-      [channel]: !prev[channel]
-    }));
-  };
-
-  const handleRuleClick = (rule: NotificationRule) => {
+  const handleRuleClick = (rule: typeof rules[0]) => {
     console.log('[Notification] 点击规则详情', rule.id);
     Taro.showToast({
-      title: '规则详情功能',
+      title: '规则详情功能开发中',
       icon: 'none'
     });
   };
 
-  const handleDndTimeClick = () => {
-    console.log('[Notification] 设置免打扰时间');
+  const handleStartTimeChange = (e: any) => {
+    const newStartTime = e.detail.value;
+    console.log('[Notification] 修改开始时间', newStartTime);
+    setDndTime(newStartTime, dndEndTime);
     Taro.showToast({
-      title: '设置免打扰时间',
-      icon: 'none'
+      title: '时间已更新',
+      icon: 'success'
     });
   };
 
-  const handleEscalationClick = () => {
-    console.log('[Notification] 查看升级规则');
+  const handleEndTimeChange = (e: any) => {
+    const newEndTime = e.detail.value;
+    console.log('[Notification] 修改结束时间', newEndTime);
+    setDndTime(dndStartTime, newEndTime);
     Taro.showToast({
-      title: '升级规则详情',
-      icon: 'none'
+      title: '时间已更新',
+      icon: 'success'
     });
   };
 
-  const escalationRules = [
-    { level: 'P0 级告警', time: '5 分钟未响应', desc: '自动升级给技术主管，同时发送短信和电话通知' },
-    { level: 'P1 级告警', time: '15 分钟未响应', desc: '自动升级给团队负责人，发送推送和短信通知' },
-    { level: 'P2 级告警', time: '30 分钟未响应', desc: '自动升级给值班组长，发送推送通知' }
-  ];
+  const handleDayToggle = (index: number) => {
+    console.log('[Notification] 切换日期', dayLabels[index]);
+    toggleDndDay(index);
+  };
 
   const channelNames: Record<string, string> = {
     push: '推送通知',
@@ -76,9 +66,11 @@ const NotificationPage: React.FC = () => {
     email: '邮件通知'
   };
 
-  const getRuleLevelText = (levels: AlertLevel[]) => {
-    return levels.join(' / ');
-  };
+  const escalationRules = [
+    { level: 'P0 级告警', time: '5 分钟未响应', desc: '自动升级给技术主管，同时发送短信和电话通知' },
+    { level: 'P1 级告警', time: '15 分钟未响应', desc: '自动升级给团队负责人，发送推送和短信通知' },
+    { level: 'P2 级告警', time: '30 分钟未响应', desc: '自动升级给值班组长，发送推送通知' }
+  ];
 
   return (
     <View className={styles.page}>
@@ -95,18 +87,33 @@ const NotificationPage: React.FC = () => {
             onClick={toggleDnd}
           />
         </View>
-        <View className={styles.dndTime} onClick={handleDndTimeClick}>
-          <Text className={styles.dndLabel}>免打扰时段</Text>
-          <View style={{ display: 'flex', alignItems: 'center' }}>
-            <Text className={styles.dndValue}>23:00 - 07:00</Text>
-            <View className={styles.arrowIcon} />
-          </View>
+
+        <View className={styles.dndTime}>
+          <Text className={styles.dndLabel}>开始时间</Text>
+          <Picker mode="time" value={dndStartTime} onChange={handleStartTimeChange}>
+            <View style={{ display: 'flex', alignItems: 'center' }}>
+              <Text className={styles.dndValue}>{dndStartTime}</Text>
+              <View className={styles.arrowIcon} />
+            </View>
+          </Picker>
         </View>
+
+        <View className={styles.dndTime}>
+          <Text className={styles.dndLabel}>结束时间</Text>
+          <Picker mode="time" value={dndEndTime} onChange={handleEndTimeChange}>
+            <View style={{ display: 'flex', alignItems: 'center' }}>
+              <Text className={styles.dndValue}>{dndEndTime}</Text>
+              <View className={styles.arrowIcon} />
+            </View>
+          </Picker>
+        </View>
+
         <View className={styles.dndDays}>
-          {['周一', '周二', '周三', '周四', '周五', '周六', '周日'].map((day, index) => (
+          {dayLabels.map((day, index) => (
             <View
               key={day}
-              className={`${styles.dayTag} ${index < 5 ? styles.active : ''}`}
+              className={`${styles.dayTag} ${dndDays[index] ? styles.active : ''}`}
+              onClick={() => handleDayToggle(index)}
             >
               <Text>{day}</Text>
             </View>
@@ -188,7 +195,12 @@ const NotificationPage: React.FC = () => {
             <View
               key={index}
               className={styles.escalationItem}
-              onClick={handleEscalationClick}
+              onClick={() => {
+                Taro.showToast({
+                  title: '升级规则详情',
+                  icon: 'none'
+                });
+              }}
             >
               <View className={styles.escalationHeader}>
                 <Text className={styles.escalationLevel}>{item.level}</Text>

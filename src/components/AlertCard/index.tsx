@@ -10,10 +10,11 @@ import styles from './index.module.scss';
 interface AlertCardProps {
   alert: Alert;
   onClick?: (alert: Alert) => void;
+  onAcknowledge?: () => void;
   showActions?: boolean;
 }
 
-const AlertCard: React.FC<AlertCardProps> = ({ alert, onClick, showActions = true }) => {
+const AlertCard: React.FC<AlertCardProps> = ({ alert, onClick, onAcknowledge, showActions = true }) => {
   const handleClick = () => {
     if (onClick) {
       onClick(alert);
@@ -36,10 +37,14 @@ const AlertCard: React.FC<AlertCardProps> = ({ alert, onClick, showActions = tru
   const handleAcknowledge = (e: React.MouseEvent) => {
     e.stopPropagation();
     console.log('[AlertCard] 确认告警', alert.id);
-    Taro.showToast({
-      title: '已确认',
-      icon: 'success'
-    });
+    if (onAcknowledge) {
+      onAcknowledge();
+    } else {
+      Taro.showToast({
+        title: '已确认',
+        icon: 'success'
+      });
+    }
   };
 
   return (
