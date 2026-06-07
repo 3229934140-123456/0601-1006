@@ -1,0 +1,127 @@
+@use '@/styles/variables.scss' as *;
+
+.card {
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  box-shadow: $shadow-card;
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  transition: all $transition-base;
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.iconWrap {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: $radius-md;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
+}
+
+.valueRow {
+  display: flex;
+  align-items: baseline;
+  gap: 8rpx;
+  margin-bottom: 8rpx;
+}
+
+.value {
+  font-size: $font-size-xxl;
+  font-weight: $font-weight-bold;
+  line-height: 1.2;
+  color: $color-text-primary;
+}
+
+.unit {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+}
+
+.label {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+  display: block;
+}
+
+.trend {
+  margin-top: 8rpx;
+
+  &.up {
+    .trendText {
+      color: $color-error;
+    }
+  }
+
+  &.down {
+    .trendText {
+      color: $color-success;
+    }
+  }
+
+  &.flat {
+    .trendText {
+      color: $color-text-tertiary;
+    }
+  }
+}
+
+.trendText {
+  font-size: $font-size-xs;
+}
+
+.primary {
+  .iconWrap {
+    background: $color-primary-bg;
+  }
+  .value {
+    color: $color-primary;
+  }
+}
+
+.success {
+  .iconWrap {
+    background: $color-success-bg;
+  }
+  .value {
+    color: $color-success;
+  }
+}
+
+.warning {
+  .iconWrap {
+    background: $color-warning-bg;
+  }
+  .value {
+    color: $color-warning;
+  }
+}
+
+.error {
+  .iconWrap {
+    background: $color-error-bg;
+  }
+  .value {
+    color: $color-error;
+  }
+}
+
+.info {
+  .iconWrap {
+    background: $color-info-bg;
+  }
+  .value {
+    color: $color-info;
+  }
+}

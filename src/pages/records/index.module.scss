@@ -1,0 +1,265 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  min-height: 100vh;
+  background: $color-bg-page;
+  padding-bottom: 60rpx;
+}
+
+.header {
+  background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+  padding: $spacing-lg $page-padding $spacing-xl;
+}
+
+.headerTitle {
+  font-size: $font-size-xxl;
+  font-weight: $font-weight-bold;
+  color: $color-text-white;
+  margin-bottom: $spacing-xs;
+}
+
+.headerSubtitle {
+  font-size: $font-size-sm;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.statsRow {
+  display: flex;
+  gap: $spacing-sm;
+  margin-top: $spacing-lg;
+}
+
+.statItem {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: $radius-md;
+  padding: $spacing-md;
+  text-align: center;
+}
+
+.statValue {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-bold;
+  color: $color-text-white;
+  line-height: 1.2;
+  margin-bottom: 4rpx;
+}
+
+.statLabel {
+  font-size: $font-size-xs;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.content {
+  padding: 0 $page-padding;
+  margin-top: -40rpx;
+}
+
+.filterBar {
+  display: flex;
+  gap: $spacing-sm;
+  margin-bottom: $spacing-md;
+}
+
+.filterTab {
+  flex: 1;
+  height: 72rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: $color-bg-card;
+  border-radius: $radius-md;
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  transition: all $transition-fast;
+
+  &.active {
+    background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+    color: $color-text-white;
+    font-weight: $font-weight-medium;
+  }
+}
+
+.recordCard {
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  margin-bottom: $spacing-md;
+  box-shadow: $shadow-card;
+  transition: all $transition-base;
+
+  &:active {
+    transform: scale(0.99);
+  }
+}
+
+.recordHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: $spacing-md;
+}
+
+.recordTitle {
+  flex: 1;
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  line-height: 1.4;
+  margin-right: $spacing-sm;
+  @include text-ellipsis-multi(2);
+}
+
+.recordLevel {
+  flex-shrink: 0;
+  padding: 6rpx 16rpx;
+  border-radius: $radius-sm;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+
+  &.P0 {
+    background: $alert-p0-bg;
+    color: $alert-p0;
+  }
+  &.P1 {
+    background: $alert-p1-bg;
+    color: $alert-p1;
+  }
+  &.P2 {
+    background: $alert-p2-bg;
+    color: $alert-p2;
+  }
+  &.P3 {
+    background: $alert-p3-bg;
+    color: $alert-p3;
+  }
+}
+
+.recordMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-md;
+  margin-bottom: $spacing-md;
+}
+
+.metaItem {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.metaLabel {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+}
+
+.metaValue {
+  font-size: $font-size-xs;
+  color: $color-text-secondary;
+}
+
+.recordStatus {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  padding-top: $spacing-md;
+  border-top: 1px solid $color-divider;
+}
+
+.statusDot {
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: $radius-round;
+
+  &.processing {
+    background: $color-primary;
+  }
+  &.resolved {
+    background: $color-success;
+  }
+}
+
+.statusText {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+
+  &.processing {
+    color: $color-primary;
+  }
+  &.resolved {
+    color: $color-success;
+  }
+}
+
+.durationText {
+  margin-left: auto;
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+}
+
+.stepList {
+  margin-top: $spacing-md;
+  padding-top: $spacing-md;
+  border-top: 1px solid $color-divider;
+}
+
+.stepItem {
+  display: flex;
+  padding: $spacing-sm 0;
+  position: relative;
+
+  &:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    left: 12rpx;
+    top: 40rpx;
+    bottom: 0;
+    width: 2rpx;
+    background: $color-divider;
+  }
+}
+
+.stepDot {
+  width: 24rpx;
+  height: 24rpx;
+  border-radius: $radius-round;
+  background: $color-primary;
+  margin-right: $spacing-md;
+  flex-shrink: 0;
+  margin-top: 4rpx;
+
+  &.acknowledge {
+    background: $color-warning;
+  }
+  &.operation {
+    background: $color-primary;
+  }
+  &.comment {
+    background: $color-text-tertiary;
+  }
+  &.resolve {
+    background: $color-success;
+  }
+}
+
+.stepContent {
+  flex: 1;
+}
+
+.stepText {
+  font-size: $font-size-sm;
+  color: $color-text-primary;
+  line-height: 1.6;
+  margin-bottom: 4rpx;
+}
+
+.stepMeta {
+  display: flex;
+  gap: $spacing-sm;
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+}
+
+.emptyWrap {
+  padding: $spacing-xl * 2 0;
+}

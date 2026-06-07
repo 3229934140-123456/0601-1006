@@ -1,0 +1,361 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  min-height: 100vh;
+  background: $color-bg-page;
+  padding-bottom: $spacing-lg;
+}
+
+.header {
+  background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+  padding: $spacing-lg $page-padding $spacing-xl;
+  color: $color-text-white;
+}
+
+.title {
+  font-size: $font-size-xxl;
+  font-weight: $font-weight-bold;
+  margin-bottom: $spacing-sm;
+}
+
+.subtitle {
+  font-size: $font-size-sm;
+  opacity: 0.85;
+}
+
+.content {
+  padding: 0 $page-padding;
+  margin-top: -40rpx;
+}
+
+.section {
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  margin-bottom: $spacing-md;
+  box-shadow: $shadow-card;
+  overflow: hidden;
+}
+
+.sectionHeader {
+  padding: $spacing-md $spacing-lg;
+  border-bottom: 1px solid $color-divider;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sectionTitle {
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+}
+
+.titleDot {
+  width: 8rpx;
+  height: 8rpx;
+  border-radius: $radius-round;
+  background: $color-primary;
+}
+
+.dndCard {
+  padding: $spacing-lg;
+  background: linear-gradient(135deg, #f0f5ff 0%, #e8f0ff 100%);
+  margin: $spacing-md $page-padding 0;
+  border-radius: $radius-lg;
+}
+
+.dndHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: $spacing-md;
+}
+
+.dndTitle {
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+}
+
+.dndSwitch {
+  width: 80rpx;
+  height: 48rpx;
+  border-radius: 28rpx;
+  background: $color-border;
+  position: relative;
+  transition: all $transition-fast;
+
+  &.active {
+    background: $color-primary;
+
+    &::after {
+      transform: translateX(32rpx);
+    }
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    width: 40rpx;
+    height: 40rpx;
+    border-radius: 50%;
+    background: $color-text-white;
+    top: 4rpx;
+    left: 4rpx;
+    transition: all $transition-fast;
+    box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.15);
+  }
+}
+
+.dndTime {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-sm 0;
+}
+
+.dndLabel {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+}
+
+.dndValue {
+  font-size: $font-size-sm;
+  color: $color-primary;
+  font-weight: $font-weight-medium;
+}
+
+.dndDays {
+  display: flex;
+  gap: $spacing-sm;
+  flex-wrap: wrap;
+  margin-top: $spacing-sm;
+}
+
+.dayTag {
+  padding: 8rpx 20rpx;
+  background: $color-bg-card;
+  border-radius: $radius-button;
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+
+  &.active {
+    background: $color-primary;
+    color: $color-text-white;
+  }
+}
+
+.ruleItem {
+  padding: $spacing-md $spacing-lg;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid $color-divider;
+  transition: background $transition-fast;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:active {
+    background: $color-bg-hover;
+  }
+}
+
+.ruleIcon {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: $radius-md;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: $spacing-md;
+  flex-shrink: 0;
+
+  &.levelP0 {
+    background: $alert-p0-bg;
+  }
+  &.levelP1 {
+    background: $alert-p1-bg;
+  }
+  &.levelP2 {
+    background: $alert-p2-bg;
+  }
+  &.levelP3 {
+    background: $alert-p3-bg;
+  }
+}
+
+.iconText {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-bold;
+
+  &.levelP0 {
+    color: $alert-p0;
+  }
+  &.levelP1 {
+    color: $alert-p1;
+  }
+  &.levelP2 {
+    color: $alert-p2;
+  }
+  &.levelP3 {
+    color: $alert-p3;
+  }
+}
+
+.ruleInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.ruleName {
+  font-size: $font-size-md;
+  color: $color-text-primary;
+  font-weight: $font-weight-medium;
+  margin-bottom: 6rpx;
+}
+
+.ruleDesc {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+}
+
+.ruleSwitch {
+  width: 72rpx;
+  height: 44rpx;
+  border-radius: 26rpx;
+  background: $color-border;
+  position: relative;
+  transition: all $transition-fast;
+  flex-shrink: 0;
+
+  &.active {
+    background: $color-success;
+
+    &::after {
+      transform: translateX(28rpx);
+    }
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    width: 36rpx;
+    height: 36rpx;
+    border-radius: 50%;
+    background: $color-text-white;
+    top: 4rpx;
+    left: 4rpx;
+    transition: all $transition-fast;
+    box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.15);
+  }
+}
+
+.channelItem {
+  padding: $spacing-md $spacing-lg;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid $color-divider;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.channelIcon {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: $radius-md;
+  background: $color-primary-bg;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: $spacing-md;
+  flex-shrink: 0;
+}
+
+.channelName {
+  flex: 1;
+  font-size: $font-size-md;
+  color: $color-text-primary;
+}
+
+.channelSwitch {
+  width: 72rpx;
+  height: 44rpx;
+  border-radius: 26rpx;
+  background: $color-border;
+  position: relative;
+  transition: all $transition-fast;
+  flex-shrink: 0;
+
+  &.active {
+    background: $color-success;
+
+    &::after {
+      transform: translateX(28rpx);
+    }
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    width: 36rpx;
+    height: 36rpx;
+    border-radius: 50%;
+    background: $color-text-white;
+    top: 4rpx;
+    left: 4rpx;
+    transition: all $transition-fast;
+    box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.15);
+  }
+}
+
+.escalationItem {
+  padding: $spacing-md $spacing-lg;
+  border-bottom: 1px solid $color-divider;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.escalationHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: $spacing-sm;
+}
+
+.escalationLevel {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+}
+
+.escalationTime {
+  font-size: $font-size-xs;
+  color: $color-warning;
+  background: $color-warning-bg;
+  padding: 4rpx 16rpx;
+  border-radius: $radius-button;
+}
+
+.escalationDesc {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  line-height: 1.6;
+}
+
+.arrowIcon {
+  width: 20rpx;
+  height: 20rpx;
+  border-top: 3rpx solid $color-text-tertiary;
+  border-right: 3rpx solid $color-text-tertiary;
+  transform: rotate(45deg);
+  margin-left: $spacing-sm;
+  flex-shrink: 0;
+}

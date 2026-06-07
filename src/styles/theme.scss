@@ -1,0 +1,48 @@
+// ============================================
+// 主题配色变量（运维告警 App）
+// ============================================
+
+// 品牌主题色：科技蓝
+$color-primary: #165dff;
+$color-primary-light: #4080ff;
+$color-primary-dark: #0e42d2;
+$color-primary-bg: rgba(22, 93, 255, 0.08);
+
+// 功能色
+$color-success: #00b42a;
+$color-success-bg: rgba(0, 180, 42, 0.1);
+$color-warning: #ff7d00;
+$color-warning-bg: rgba(255, 125, 0, 0.1);
+$color-error: #f53f3f;
+$color-error-bg: rgba(245, 63, 63, 0.1);
+$color-info: #165dff;
+$color-info-bg: rgba(22, 93, 255, 0.08);
+
+// 告警等级色
+$alert-p0: #f53f3f;
+$alert-p0-bg: rgba(245, 63, 63, 0.12);
+$alert-p1: #ff7d00;
+$alert-p1-bg: rgba(255, 125, 0, 0.12);
+$alert-p2: #ff9a2e;
+$alert-p2-bg: rgba(255, 154, 46, 0.12);
+$alert-p3: #165dff;
+$alert-p3-bg: rgba(22, 93, 255, 0.12);
+$alert-resolved: #00b42a;
+$alert-resolved-bg: rgba(0, 180, 42, 0.12);
+
+// 背景色
+$color-bg-page: #f2f3f5;
+$color-bg-card: #ffffff;
+$color-bg-hover: #f7f8fa;
+$color-bg-navbar: linear-gradient(135deg, #165dff 0%, #4080ff 100%);
+
+// 文本色
+$color-text-primary: #1d2129;
+$color-text-secondary: #4e5969;
+$color-text-tertiary: #86909c;
+$color-text-disabled: #c9cdd4;
+$color-text-white: #ffffff;
+
+// 边框色
+$color-border: #e5e6eb;
+$color-divider: #f2f3f5;

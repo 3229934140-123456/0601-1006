@@ -1,0 +1,72 @@
+@use '@/styles/variables.scss' as *;
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: $radius-sm;
+  font-weight: $font-weight-medium;
+  white-space: nowrap;
+
+  &.small {
+    height: 40rpx;
+    padding: 0 16rpx;
+    font-size: $font-size-xs;
+  }
+
+  &.medium {
+    height: 48rpx;
+    padding: 0 20rpx;
+    font-size: $font-size-sm;
+  }
+
+  &.large {
+    height: 56rpx;
+    padding: 0 24rpx;
+    font-size: $font-size-md;
+  }
+}
+
+.text {
+  line-height: 1;
+}
+
+.levelP0 {
+  background-color: $alert-p0-bg;
+  color: $alert-p0;
+}
+
+.levelP1 {
+  background-color: $alert-p1-bg;
+  color: $alert-p1;
+}
+
+.levelP2 {
+  background-color: $alert-p2-bg;
+  color: $alert-p2;
+}
+
+.levelP3 {
+  background-color: $alert-p3-bg;
+  color: $alert-p3;
+}
+
+.success {
+  background-color: $color-success-bg;
+  color: $color-success;
+}
+
+.warning {
+  background-color: $color-warning-bg;
+  color: $color-warning;
+}
+
+.error {
+  background-color: $color-error-bg;
+  color: $color-error;
+}
+
+.info {
+  background-color: $color-info-bg;
+  color: $color-info;
+}

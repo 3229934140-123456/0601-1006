@@ -1,0 +1,309 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  min-height: 100vh;
+  background: $color-bg-page;
+  padding-bottom: 60rpx;
+}
+
+.header {
+  background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+  padding: $spacing-lg $page-padding $spacing-xl;
+}
+
+.headerTitle {
+  font-size: $font-size-xxl;
+  font-weight: $font-weight-bold;
+  color: $color-text-white;
+  margin-bottom: $spacing-xs;
+}
+
+.headerSubtitle {
+  font-size: $font-size-sm;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.statsRow {
+  display: flex;
+  gap: $spacing-sm;
+  margin-top: $spacing-lg;
+}
+
+.statItem {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: $radius-md;
+  padding: $spacing-md;
+  text-align: center;
+}
+
+.statValue {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-bold;
+  color: $color-text-white;
+  line-height: 1.2;
+  margin-bottom: 4rpx;
+
+  &.error {
+    color: #ff7875;
+  }
+  &.warning {
+    color: #ffd666;
+  }
+  &.normal {
+    color: #95de64;
+  }
+}
+
+.statLabel {
+  font-size: $font-size-xs;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.content {
+  padding: 0 $page-padding;
+  margin-top: -40rpx;
+}
+
+.topologyCard {
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  box-shadow: $shadow-card;
+  margin-bottom: $spacing-md;
+}
+
+.cardTitle {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  margin-bottom: $spacing-lg;
+}
+
+.topologyView {
+  position: relative;
+  height: 500rpx;
+  background: linear-gradient(180deg, #f7f8fa 0%, #f0f1f5 100%);
+  border-radius: $radius-md;
+  overflow: hidden;
+}
+
+.node {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 120rpx;
+  padding: $spacing-sm;
+  border-radius: $radius-md;
+  background: $color-bg-card;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+  transition: all $transition-base;
+
+  &.error {
+    border: 2rpx solid $color-error;
+    box-shadow: 0 0 20rpx rgba(245, 63, 63, 0.3);
+  }
+
+  &.warning {
+    border: 2rpx solid $color-warning;
+    box-shadow: 0 0 20rpx rgba(255, 125, 0, 0.2);
+  }
+
+  &.normal {
+    border: 2rpx solid transparent;
+  }
+}
+
+.nodeIcon {
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: $radius-sm;
+  margin-bottom: 8rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: $font-size-xs;
+  color: $color-text-white;
+  font-weight: $font-weight-bold;
+
+  &.gateway {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  }
+  &.service {
+    background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+  }
+  &.database {
+    background: linear-gradient(135deg, #52c41a 0%, #73d13d 100%);
+  }
+  &.cache {
+    background: linear-gradient(135deg, #fa8c16 0%, #ffa940 100%);
+  }
+  &.mq {
+    background: linear-gradient(135deg, #722ed1 0%, #9254de 100%);
+  }
+}
+
+.nodeName {
+  font-size: 20rpx;
+  color: $color-text-primary;
+  text-align: center;
+  @include text-ellipsis;
+  max-width: 100rpx;
+}
+
+.nodeAlertBadge {
+  position: absolute;
+  top: -8rpx;
+  right: -8rpx;
+  min-width: 32rpx;
+  height: 32rpx;
+  padding: 0 8rpx;
+  border-radius: $radius-round;
+  background: $color-error;
+  color: $color-text-white;
+  font-size: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: $font-weight-bold;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-md;
+  margin-top: $spacing-lg;
+  padding-top: $spacing-md;
+  border-top: 1px solid $color-divider;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.legendDot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: $radius-round;
+
+  &.error {
+    background: $color-error;
+  }
+  &.warning {
+    background: $color-warning;
+  }
+  &.normal {
+    background: $color-success;
+  }
+}
+
+.legendText {
+  font-size: $font-size-xs;
+  color: $color-text-secondary;
+}
+
+.section {
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  box-shadow: $shadow-card;
+  margin-bottom: $spacing-md;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: $spacing-md;
+}
+
+.sectionTitle {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+}
+
+.sectionMore {
+  font-size: $font-size-sm;
+  color: $color-primary;
+}
+
+.changeItem {
+  display: flex;
+  align-items: flex-start;
+  padding: $spacing-md 0;
+  border-bottom: 1px solid $color-divider;
+
+  &:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  &:first-child {
+    padding-top: 0;
+  }
+}
+
+.changeType {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: $radius-md;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: $spacing-md;
+  flex-shrink: 0;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  color: $color-text-white;
+
+  &.deploy {
+    background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+  }
+  &.config {
+    background: linear-gradient(135deg, $color-warning 0%, #ffa940 100%);
+  }
+  &.rollback {
+    background: linear-gradient(135deg, $color-error 0%, #ff7875 100%);
+  }
+}
+
+.changeContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.changeTitle {
+  font-size: $font-size-md;
+  color: $color-text-primary;
+  font-weight: $font-weight-medium;
+  margin-bottom: 4rpx;
+}
+
+.changeDesc {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  line-height: 1.5;
+  @include text-ellipsis-multi(2);
+}
+
+.changeMeta {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  margin-top: 8rpx;
+}
+
+.changeOperator {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+}
+
+.changeTime {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+}
